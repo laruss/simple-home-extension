@@ -74,12 +74,16 @@ export function AddBookmarkModal({
 			setFaviconUrl(metadata.faviconUrl);
 			setIsFetched(true);
 		} catch {
-			setError("Failed to fetch site info. You can still add the bookmark manually.");
+			setError(
+				"Failed to fetch site info. You can still add the bookmark manually.",
+			);
 			const normalizedUrl = normalizeUrl(url);
 			setUrl(normalizedUrl);
 			const hostname = new URL(normalizedUrl).hostname;
 			setTitle(hostname);
-			setFaviconUrl(`https://www.google.com/s2/favicons?domain=${hostname}&sz=64`);
+			setFaviconUrl(
+				`https://www.google.com/s2/favicons?domain=${hostname}&sz=64`,
+			);
 			setIsFetched(true);
 		} finally {
 			setIsLoading(false);

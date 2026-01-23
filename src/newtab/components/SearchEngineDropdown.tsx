@@ -60,7 +60,10 @@ export function SearchEngineDropdown({
 	}, [isOpen, onToggle]);
 
 	return (
-		<div ref={dropdownRef} className="absolute left-2 top-1/2 z-10 -translate-y-1/2">
+		<div
+			ref={dropdownRef}
+			className="absolute left-2 top-1/2 z-10 -translate-y-1/2"
+		>
 			<button
 				type="button"
 				onClick={onToggle}

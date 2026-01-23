@@ -1,16 +1,25 @@
-# bun-chrome-extension
+# Home Page
 
-> Develop chrome extension with full TypeScript support using [Bun](https://bun.sh) 🐰 & [React](https://react.dev/)
+![Home Page Screenshot](index.webp)
 
-Bun chrome extension is a starter template for developing chrome-extensions using modern frontend tooling.
+A minimal Chrome extension that replaces your new tab page with a clean, customizable home page featuring multi-engine search and bookmarks.
 
-## What's inside?
-- [x] First-class TypeScript support
-- [x] Background & content scripts
-- [x] Popup & Options page built with React
-- [x] Lint & format with [BiomeJS](https://biomejs.dev/)
-- [x] Latest Manifest v3
-- [x] TailwindCSS
+## Features
+
+- Custom new tab page with background image
+- Multi-engine search (Google, Bing, DuckDuckGo, etc.)
+- Bookmark management
+- Minimal and fast
+
+## Tech Stack
+
+- [Bun](https://bun.sh) - Runtime and bundler
+- [React](https://react.dev/) - UI framework
+- [TailwindCSS](https://tailwindcss.com/) - Styling
+- [BiomeJS](https://biomejs.dev/) - Linting and formatting
+- Manifest V3
+
+## Development
 
 Install dependencies:
 
@@ -18,24 +27,31 @@ Install dependencies:
 bun install
 ```
 
-Run:
+Run in development mode:
 
 ```bash
 bun run dev
 ```
 
-Build:
+Build for production:
 
 ```bash
 bun run build
 ```
 
-Package extension for publishing
+Package for publishing:
 
 ```bash
 bun run pack
 ```
 
+## Installation
+
+1. Run `bun run build`
+2. Open Chrome and navigate to `chrome://extensions`
+3. Enable "Developer mode"
+4. Click "Load unpacked" and select the `build` folder
+
 ## License
 
-This project is licensed under the [MIT](/license) License.
+MIT

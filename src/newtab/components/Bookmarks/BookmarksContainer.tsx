@@ -6,15 +6,25 @@ import { AddBookmarkModal } from "./AddBookmarkModal";
 import { BookmarkItem } from "./BookmarkItem";
 import { ManageBookmarksModal } from "./ManageBookmarksModal";
 
-const addButtonSizeClasses: Record<BookmarkSize, { button: string; icon: number }> = {
+const addButtonSizeClasses: Record<
+	BookmarkSize,
+	{ button: string; icon: number }
+> = {
 	small: { button: "h-14 w-14 rounded-xl", icon: 20 },
 	medium: { button: "h-20 w-20 rounded-2xl", icon: 24 },
 	large: { button: "h-28 w-28 rounded-2xl", icon: 32 },
 };
 
 export function BookmarksContainer() {
-	const { bookmarks, size, isLoading, addBookmark, removeBookmark, reorderBookmarks, setBookmarkSize } =
-		useBookmarks();
+	const {
+		bookmarks,
+		size,
+		isLoading,
+		addBookmark,
+		removeBookmark,
+		reorderBookmarks,
+		setBookmarkSize,
+	} = useBookmarks();
 	const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 	const [isManageModalOpen, setIsManageModalOpen] = useState(false);
 

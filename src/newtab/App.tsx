@@ -1,8 +1,8 @@
-import {type KeyboardEvent, useEffect, useRef, useState} from "react";
-import {SEARCH_ENGINES, type SearchEngine} from "../types/searchEngine";
-import {storage} from "../utils";
-import {BookmarksContainer} from "./components/Bookmarks/BookmarksContainer";
-import {SearchEngineDropdown} from "./components/SearchEngineDropdown";
+import { type KeyboardEvent, useEffect, useRef, useState } from "react";
+import { SEARCH_ENGINES, type SearchEngine } from "../types/searchEngine";
+import { storage } from "../utils";
+import { BookmarksContainer } from "./components/Bookmarks/BookmarksContainer";
+import { SearchEngineDropdown } from "./components/SearchEngineDropdown";
 
 function SearchIcon() {
 	return (
@@ -34,8 +34,8 @@ export function App() {
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
 	useEffect(() => {
-		if (location.search !== '?' && !location.href.includes('?')) {
-			location.search = '?';
+		if (location.search !== "?" && !location.href.includes("?")) {
+			location.search = "?";
 		}
 
 		setTimeout(() => ref.current?.focus(), 0);
@@ -55,11 +55,29 @@ export function App() {
 	const handleEngineSelect = (engine: SearchEngine) => {
 		setSelectedEngine(engine);
 		storage.set("searchEngine", engine.id);
+		ref.current?.focus();
+	};
+
+	const isUrl = (text: string): boolean => {
+		const trimmed = text.trim();
+		if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+			return true;
+		}
+		// Check for domain-like pattern: no spaces, contains a dot, has valid TLD-like ending
+		return (
+			!trimmed.includes(" ") && /^[^\s]+\.[a-z]{2,}(\/.*)?$/i.test(trimmed)
+		);
 	};
 
 	const handleSearch = () => {
-		if (query.trim()) {
-			window.location.href = `${selectedEngine.searchUrl}${encodeURIComponent(query.trim())}`;
+		const trimmed = query.trim();
+		if (trimmed) {
+			if (isUrl(trimmed)) {
+				const url = trimmed.startsWith("http") ? trimmed : `https://${trimmed}`;
+				window.location.href = url;
+			} else {
+				window.location.href = `${selectedEngine.searchUrl}${encodeURIComponent(trimmed)}`;
+			}
 		}
 	};
 

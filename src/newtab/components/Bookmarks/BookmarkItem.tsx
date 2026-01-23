@@ -6,7 +6,10 @@ interface BookmarkItemProps {
 	size: BookmarkSize;
 }
 
-const sizeClasses: Record<BookmarkSize, { button: string; icon: string; fallback: string }> = {
+const sizeClasses: Record<
+	BookmarkSize,
+	{ button: string; icon: string; fallback: string }
+> = {
 	small: {
 		button: "h-14 w-14 rounded-xl",
 		icon: "h-8 w-8",

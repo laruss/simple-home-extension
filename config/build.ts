@@ -6,11 +6,8 @@ import manifest from "../public/manifest.json";
 const outdir = "./build";
 
 const {
-  content_scripts,
   background: { service_worker },
 } = manifest;
-
-const scripts = content_scripts.flatMap((script) => script.js);
 
 const resolveEntryPoints = (entrypoints: string[]) => {
   return entrypoints.map((entrypoint) => `./src/${entrypoint}`);
@@ -29,10 +26,8 @@ const ext = {
 await Bun.build({
   target: "browser",
   entrypoints: resolveEntryPoints([
-    ...scripts,
     service_worker,
     "options/index.tsx",
-    "popup/index.tsx",
     "newtab/index.tsx",
   ]),
   outdir,
