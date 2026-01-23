@@ -1,6 +1,6 @@
 {
   "$schema": "./schema.json",
-  "name": "Home Page",
+  "name": "Simple Home Page",
   "short_name": "Home Page",
   "description": "Custom new minimal tab page",
   "version": "0.1.0",

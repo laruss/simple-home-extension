@@ -1,6 +1,6 @@
-# Home Page
+# Simple Home Page
 
-![Home Page Screenshot](index.webp)
+![Simple Home Page Screenshot](index.webp)
 
 A minimal Chrome extension that replaces your new tab page with a clean, customizable home page featuring multi-engine search and bookmarks.
 
