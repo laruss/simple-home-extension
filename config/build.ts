@@ -33,6 +33,7 @@ await Bun.build({
     service_worker,
     "options/index.tsx",
     "popup/index.tsx",
+    "newtab/index.tsx",
   ]),
   outdir,
 });

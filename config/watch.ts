@@ -32,16 +32,37 @@ console.log(chalk.bold(defaultWatchMessage))
 
 const watchers: FSWatcher[] = [];
 
+let buildTimeout: ReturnType<typeof setTimeout> | null = null;
+let isBuilding = false;
+
+const debouncedBuild = (filename: string | null) => {
+  // Ignore temp files
+  if (filename?.endsWith("~") || filename?.startsWith(".")) return;
+
+  if (buildTimeout) clearTimeout(buildTimeout);
+
+  buildTimeout = setTimeout(async () => {
+    if (isBuilding) return;
+    isBuilding = true;
+
+    console.log(chalk.bold.yellow.dim(`Changes detected in ${filename}`));
+
+    try {
+      await runBuild();
+      console.log(chalk.bold.green("✔️ Updated build files"));
+      server.publish(channel, Bun.env.CHROME_EXTENSION_ID as string);
+    } catch (error) {
+      console.log(chalk.bold.red("Build failed"));
+    } finally {
+      isBuilding = false;
+      console.log(chalk.bold(defaultWatchMessage));
+    }
+  }, 100);
+};
+
 for (const directory of directoriesToWatch) {
-  const watcher = watch(directory, { recursive: true }, async (_, filename) => {
-    console.log(chalk.bold.yellow.dim(`Changes detected in ${filename}`))
-    
-    await runBuild();
-    console.log(chalk.bold.green("✔️ Updated build files"))
-
-    server.publish(channel, Bun.env.CHROME_EXTENSION_ID as string);
-
-    console.log(chalk.bold(defaultWatchMessage))
+  const watcher = watch(directory, { recursive: true }, (_, filename) => {
+    debouncedBuild(filename);
   });
 
   watchers.push(watcher);

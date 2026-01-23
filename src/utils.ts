@@ -40,3 +40,24 @@ export const storage = {
 			.catch(console.log);
 	},
 };
+
+export interface SiteMetadata {
+	title: string;
+	faviconUrl: string;
+}
+
+export async function fetchSiteMetadata(url: string): Promise<SiteMetadata> {
+	const response = await chrome.runtime.sendMessage({
+		type: "FETCH_SITE_METADATA",
+		url,
+	});
+
+	if (!response.success) {
+		throw new Error(response.error || "Failed to fetch metadata");
+	}
+
+	return {
+		title: response.title,
+		faviconUrl: response.faviconUrl,
+	};
+}
