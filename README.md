@@ -8,7 +8,8 @@ A minimal Chrome extension that replaces your new tab page with a clean, customi
 
 - Custom new tab page with background image
 - Multi-engine search (Google, Bing, DuckDuckGo, etc.)
-- Bookmark management
+- Keyboard shortcuts for search engines (Cmd/Ctrl + Alt + G/B/P/Y/X)
+- Bookmark management with custom icons
 - Minimal and fast
 
 ## Tech Stack

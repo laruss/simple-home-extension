@@ -41,6 +41,21 @@ export const storage = {
 	},
 };
 
+export const storageLocal = {
+	set: async (key: string, value: unknown) => {
+		return chrome.storage.local
+			.set({ [key]: value })
+			.then(() => value)
+			.catch(console.log);
+	},
+	get: async (key: string) => {
+		return chrome.storage.local
+			.get(key)
+			.then((result) => result[key])
+			.catch(console.log);
+	},
+};
+
 export interface SiteMetadata {
 	title: string;
 	faviconUrl: string;

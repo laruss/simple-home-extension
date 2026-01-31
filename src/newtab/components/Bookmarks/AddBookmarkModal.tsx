@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { fetchSiteMetadata } from "../../../utils";
-import { LoaderIcon } from "../Icons";
+import { LoaderIcon, UploadIcon } from "../Icons";
 import { Modal } from "../Modal";
 
 interface AddBookmarkModalProps {
@@ -20,6 +20,7 @@ export function AddBookmarkModal({
 	const [isLoading, setIsLoading] = useState(false);
 	const [isFetched, setIsFetched] = useState(false);
 	const [error, setError] = useState("");
+	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const resetForm = () => {
 		setUrl("");
@@ -81,9 +82,7 @@ export function AddBookmarkModal({
 			setUrl(normalizedUrl);
 			const hostname = new URL(normalizedUrl).hostname;
 			setTitle(hostname);
-			setFaviconUrl(
-				`https://www.google.com/s2/favicons?domain=${hostname}&sz=64`,
-			);
+			setFaviconUrl("");
 			setIsFetched(true);
 		} finally {
 			setIsLoading(false);
@@ -109,6 +108,26 @@ export function AddBookmarkModal({
 
 		await onAdd(url, title.trim(), faviconUrl);
 		handleClose();
+	};
+
+	const handleIconUpload = (file?: File) => {
+		if (!file) {
+			return;
+		}
+		if (!file.type.startsWith("image/")) {
+			setError("Please select an image file");
+			return;
+		}
+		const reader = new FileReader();
+		reader.onload = () => {
+			const result = typeof reader.result === "string" ? reader.result : "";
+			setFaviconUrl(result);
+			setError("");
+		};
+		reader.onerror = () => {
+			setError("Failed to read the icon file");
+		};
+		reader.readAsDataURL(file);
 	};
 
 	const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -158,15 +177,41 @@ export function AddBookmarkModal({
 				{isFetched && (
 					<>
 						<div className="flex items-center gap-3 rounded-lg bg-gray-50 p-3">
-							<img
-								src={faviconUrl}
-								alt=""
-								className="h-8 w-8 rounded"
-								onError={(e) => {
-									(e.target as HTMLImageElement).style.display = "none";
-								}}
-							/>
+							{faviconUrl ? (
+								<img
+									src={faviconUrl}
+									alt=""
+									className="h-8 w-8 rounded"
+									onError={(e) => {
+										(e.target as HTMLImageElement).style.display = "none";
+									}}
+								/>
+							) : (
+								<span className="text-xs text-gray-500">No favicon</span>
+							)}
 							<span className="text-sm text-gray-600">Favicon preview</span>
+							<div className="ml-auto">
+								<input
+									ref={fileInputRef}
+									type="file"
+									accept="image/*"
+									onChange={(e) => {
+										handleIconUpload(e.target.files?.[0]);
+										if (e.target) {
+											e.target.value = "";
+										}
+									}}
+									className="hidden"
+								/>
+								<button
+									type="button"
+									onClick={() => fileInputRef.current?.click()}
+									className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-100"
+								>
+									<UploadIcon className="text-gray-500" />
+									<span>Custom icon</span>
+								</button>
+							</div>
 						</div>
 
 						<div>

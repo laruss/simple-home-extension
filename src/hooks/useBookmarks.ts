@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Bookmark, BookmarkSize } from "../types/bookmark";
-import { storage } from "../utils";
+import { storage, storageLocal } from "../utils";
 
 const STORAGE_KEY = "bookmarks";
 const SIZE_STORAGE_KEY = "bookmarkSize";
@@ -14,14 +14,33 @@ export function useBookmarks() {
 		const loadData = async () => {
 			try {
 				const [storedBookmarks, storedSize] = await Promise.all([
-					storage.get(STORAGE_KEY),
-					storage.get(SIZE_STORAGE_KEY),
+					storageLocal.get(STORAGE_KEY),
+					storageLocal.get(SIZE_STORAGE_KEY),
 				]);
-				if (storedBookmarks && Array.isArray(storedBookmarks)) {
-					setBookmarks(storedBookmarks.sort((a, b) => a.order - b.order));
+				let nextBookmarks = storedBookmarks;
+				let nextSize = storedSize;
+
+				if (!nextBookmarks || !Array.isArray(nextBookmarks)) {
+					const legacyBookmarks = await storage.get(STORAGE_KEY);
+					if (legacyBookmarks && Array.isArray(legacyBookmarks)) {
+						nextBookmarks = legacyBookmarks;
+						await storageLocal.set(STORAGE_KEY, legacyBookmarks);
+					}
 				}
-				if (storedSize) {
-					setSize(storedSize as BookmarkSize);
+
+				if (!nextSize) {
+					const legacySize = await storage.get(SIZE_STORAGE_KEY);
+					if (legacySize) {
+						nextSize = legacySize as BookmarkSize;
+						await storageLocal.set(SIZE_STORAGE_KEY, nextSize);
+					}
+				}
+
+				if (nextBookmarks && Array.isArray(nextBookmarks)) {
+					setBookmarks(nextBookmarks.sort((a, b) => a.order - b.order));
+				}
+				if (nextSize) {
+					setSize(nextSize as BookmarkSize);
 				}
 			} catch (error) {
 				console.error("Failed to load bookmarks:", error);
@@ -34,7 +53,7 @@ export function useBookmarks() {
 
 	const saveBookmarks = useCallback(async (newBookmarks: Bookmark[]) => {
 		try {
-			await storage.set(STORAGE_KEY, newBookmarks);
+			await storageLocal.set(STORAGE_KEY, newBookmarks);
 		} catch (error) {
 			console.error("Failed to save bookmarks:", error);
 		}
@@ -94,7 +113,7 @@ export function useBookmarks() {
 	const setBookmarkSize = useCallback(async (newSize: BookmarkSize) => {
 		setSize(newSize);
 		try {
-			await storage.set(SIZE_STORAGE_KEY, newSize);
+			await storageLocal.set(SIZE_STORAGE_KEY, newSize);
 		} catch (error) {
 			console.error("Failed to save bookmark size:", error);
 		}

@@ -51,7 +51,7 @@ export function BookmarkItem({ bookmark, size }: BookmarkItemProps) {
 				className={`flex items-center justify-center bg-white/90 shadow-md backdrop-blur-sm transition-all hover:scale-105 hover:bg-white hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-white/50 ${classes.button}`}
 				aria-label={`Open ${bookmark.title}`}
 			>
-				{!imgError ? (
+				{bookmark.faviconUrl && !imgError ? (
 					<img
 						src={bookmark.faviconUrl}
 						alt=""

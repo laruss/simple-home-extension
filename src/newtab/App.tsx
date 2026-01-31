@@ -1,4 +1,11 @@
-import { type KeyboardEvent, useEffect, useRef, useState } from "react";
+import {
+	type KeyboardEvent as ReactKeyboardEvent,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
+import { useSearchEngineHotkeys } from "../hooks/useSearchEngineHotkeys";
 import { SEARCH_ENGINES, type SearchEngine } from "../types/searchEngine";
 import { storage } from "../utils";
 import { BookmarksContainer } from "./components/Bookmarks/BookmarksContainer";
@@ -52,11 +59,11 @@ export function App() {
 		});
 	}, []);
 
-	const handleEngineSelect = (engine: SearchEngine) => {
+	const handleEngineSelect = useCallback((engine: SearchEngine) => {
 		setSelectedEngine(engine);
 		storage.set("searchEngine", engine.id);
 		ref.current?.focus();
-	};
+	}, []);
 
 	const isUrl = (text: string): boolean => {
 		const trimmed = text.trim();
@@ -81,7 +88,12 @@ export function App() {
 		}
 	};
 
-	const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+	useSearchEngineHotkeys({
+		onSelect: handleEngineSelect,
+		onCloseDropdown: () => setIsDropdownOpen(false),
+	});
+
+	const handleKeyDown = (e: ReactKeyboardEvent<HTMLInputElement>) => {
 		if (e.key === "Enter") {
 			handleSearch();
 		}

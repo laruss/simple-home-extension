@@ -28,5 +28,6 @@
     "paths": {
       "src": ["./src/*"]
     }
-  }
+  },
+  "exclude": ["build", "dist", "release"]
 }
