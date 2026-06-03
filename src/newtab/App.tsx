@@ -1,4 +1,5 @@
 import { type KeyboardEvent as ReactKeyboardEvent, useState } from "react";
+import { useBackground } from "../hooks/useBackground";
 import { BookmarksContainer } from "./components/Bookmarks/BookmarksContainer";
 
 function SearchIcon() {
@@ -24,6 +25,7 @@ function SearchIcon() {
 
 export function App() {
 	const [query, setQuery] = useState("");
+	const { backgroundUrl } = useBackground();
 
 	const isUrl = (text: string): boolean => {
 		const trimmed = text.trim();
@@ -58,7 +60,9 @@ export function App() {
 	return (
 		<div
 			className="min-h-screen w-full bg-cover bg-fixed bg-center bg-no-repeat"
-			style={{ backgroundImage: "url('../background.webp')" }}
+			style={{
+				backgroundImage: `url('${backgroundUrl ?? "../background.webp"}')`,
+			}}
 		>
 			<div className="pt-32">
 				<div className="mx-auto w-full max-w-xl px-4">

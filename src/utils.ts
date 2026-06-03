@@ -54,6 +54,9 @@ export const storageLocal = {
 			.then((result) => result[key])
 			.catch(console.log);
 	},
+	remove: async (key: string) => {
+		return chrome.storage.local.remove(key).catch(console.log);
+	},
 };
 
 export interface SiteMetadata {

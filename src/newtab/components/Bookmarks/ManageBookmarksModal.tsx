@@ -10,6 +10,7 @@ interface ManageBookmarksModalProps {
 	onRemove: (id: string) => Promise<void>;
 	onReorder: (fromIndex: number, toIndex: number) => Promise<void>;
 	onSizeChange: (size: BookmarkSize) => Promise<void>;
+	onChangeBackground: () => void;
 }
 
 const sizes: { value: BookmarkSize; label: string }[] = [
@@ -26,6 +27,7 @@ export function ManageBookmarksModal({
 	onRemove,
 	onReorder,
 	onSizeChange,
+	onChangeBackground,
 }: ManageBookmarksModalProps) {
 	const handleMoveUp = (index: number) => {
 		if (index > 0) {
@@ -35,12 +37,25 @@ export function ManageBookmarksModal({
 
 	const handleMoveDown = (index: number) => {
 		if (index < bookmarks.length - 1) {
-			onReorder(index, index + 1);
+			void onReorder(index, index + 1);
 		}
 	};
 
 	return (
-		<Modal isOpen={isOpen} onClose={onClose} title="Manage Bookmarks">
+		<Modal isOpen={isOpen} onClose={onClose} title="Settings">
+			<div className="mb-4">
+				<span className="mb-2 block text-sm font-medium text-gray-700">
+					Background
+				</span>
+				<button
+					type="button"
+					onClick={onChangeBackground}
+					className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200"
+				>
+					Change Background
+				</button>
+			</div>
+
 			<div className="mb-4">
 				<span className="mb-2 block text-sm font-medium text-gray-700">
 					Icon Size

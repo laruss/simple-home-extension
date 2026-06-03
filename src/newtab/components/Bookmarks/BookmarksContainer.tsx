@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useBookmarks } from "../../../hooks/useBookmarks";
 import type { BookmarkSize } from "../../../types/bookmark";
+import { ChangeBackgroundModal } from "../ChangeBackgroundModal";
 import { GearIcon, PlusIcon } from "../Icons";
 import { AddBookmarkModal } from "./AddBookmarkModal";
 import { BookmarkItem } from "./BookmarkItem";
@@ -27,6 +28,7 @@ export function BookmarksContainer() {
 	} = useBookmarks();
 	const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 	const [isManageModalOpen, setIsManageModalOpen] = useState(false);
+	const [isBackgroundModalOpen, setIsBackgroundModalOpen] = useState(false);
 
 	if (isLoading) {
 		return null;
@@ -42,7 +44,7 @@ export function BookmarksContainer() {
 					type="button"
 					onClick={() => setIsManageModalOpen(true)}
 					className="absolute -top-1 right-4 rounded-lg p-2 text-white/70 opacity-0 transition-all hover:bg-white/20 hover:text-white group-hover:opacity-100"
-					aria-label="Manage bookmarks"
+					aria-label="Settings"
 				>
 					<GearIcon size={18} />
 				</button>
@@ -91,6 +93,15 @@ export function BookmarksContainer() {
 				onRemove={removeBookmark}
 				onReorder={reorderBookmarks}
 				onSizeChange={setBookmarkSize}
+				onChangeBackground={() => {
+					setIsManageModalOpen(false);
+					setIsBackgroundModalOpen(true);
+				}}
+			/>
+
+			<ChangeBackgroundModal
+				isOpen={isBackgroundModalOpen}
+				onClose={() => setIsBackgroundModalOpen(false)}
 			/>
 		</div>
 	);
