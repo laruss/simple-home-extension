@@ -4,19 +4,23 @@ import { storage, storageLocal } from "../utils";
 
 const STORAGE_KEY = "bookmarks";
 const SIZE_STORAGE_KEY = "bookmarkSize";
+const SHOW_ADD_BUTTON_KEY = "showAddButton";
 
 export function useBookmarks() {
 	const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
 	const [size, setSize] = useState<BookmarkSize>("small");
+	const [showAddButton, setShowAddButtonState] = useState(true);
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		const loadData = async () => {
 			try {
-				const [storedBookmarks, storedSize] = await Promise.all([
-					storageLocal.get(STORAGE_KEY),
-					storageLocal.get(SIZE_STORAGE_KEY),
-				]);
+				const [storedBookmarks, storedSize, storedShowAddButton] =
+					await Promise.all([
+						storageLocal.get(STORAGE_KEY),
+						storageLocal.get(SIZE_STORAGE_KEY),
+						storageLocal.get(SHOW_ADD_BUTTON_KEY),
+					]);
 				let nextBookmarks = storedBookmarks;
 				let nextSize = storedSize;
 
@@ -41,6 +45,9 @@ export function useBookmarks() {
 				}
 				if (nextSize) {
 					setSize(nextSize as BookmarkSize);
+				}
+				if (storedShowAddButton === false) {
+					setShowAddButtonState(false);
 				}
 			} catch (error) {
 				console.error("Failed to load bookmarks:", error);
@@ -119,13 +126,36 @@ export function useBookmarks() {
 		}
 	}, []);
 
+	const editBookmark = useCallback(
+		async (id: string, url: string, title: string, faviconUrl: string) => {
+			const newBookmarks = bookmarks.map((b) =>
+				b.id === id ? { ...b, url, title, faviconUrl } : b,
+			);
+			setBookmarks(newBookmarks);
+			await saveBookmarks(newBookmarks);
+		},
+		[bookmarks, saveBookmarks],
+	);
+
+	const setShowAddButton = useCallback(async (show: boolean) => {
+		setShowAddButtonState(show);
+		try {
+			await storageLocal.set(SHOW_ADD_BUTTON_KEY, show);
+		} catch (error) {
+			console.error("Failed to save show add button setting:", error);
+		}
+	}, []);
+
 	return {
 		bookmarks,
 		size,
+		showAddButton,
 		isLoading,
 		addBookmark,
+		editBookmark,
 		removeBookmark,
 		reorderBookmarks,
 		setBookmarkSize,
+		setShowAddButton,
 	};
 }

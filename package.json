@@ -1,5 +1,6 @@
 {
   "name": "simple-home-page-extension",
+  "version": "0.2.1",
   "module": "index.ts",
   "scripts": {
     "build": "bun run config/build.ts",

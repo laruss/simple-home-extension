@@ -20,11 +20,14 @@ export function BookmarksContainer() {
 	const {
 		bookmarks,
 		size,
+		showAddButton,
 		isLoading,
 		addBookmark,
+		editBookmark,
 		removeBookmark,
 		reorderBookmarks,
 		setBookmarkSize,
+		setShowAddButton,
 	} = useBookmarks();
 	const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 	const [isManageModalOpen, setIsManageModalOpen] = useState(false);
@@ -67,14 +70,16 @@ export function BookmarksContainer() {
 						{bookmarks.map((bookmark) => (
 							<BookmarkItem key={bookmark.id} bookmark={bookmark} size={size} />
 						))}
-						<button
-							type="button"
-							onClick={() => setIsAddModalOpen(true)}
-							className={`flex items-center justify-center bg-white/70 shadow-md backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/90 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-white/50 ${addBtnClasses.button}`}
-							aria-label="Add bookmark"
-						>
-							<PlusIcon className="text-gray-400" size={addBtnClasses.icon} />
-						</button>
+						{showAddButton && (
+							<button
+								type="button"
+								onClick={() => setIsAddModalOpen(true)}
+								className={`flex items-center justify-center bg-white/70 shadow-md backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/90 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-white/50 ${addBtnClasses.button}`}
+								aria-label="Add bookmark"
+							>
+								<PlusIcon className="text-gray-400" size={addBtnClasses.icon} />
+							</button>
+						)}
 					</div>
 				)}
 			</div>
@@ -90,9 +95,12 @@ export function BookmarksContainer() {
 				onClose={() => setIsManageModalOpen(false)}
 				bookmarks={bookmarks}
 				size={size}
+				showAddButton={showAddButton}
 				onRemove={removeBookmark}
 				onReorder={reorderBookmarks}
+				onEdit={editBookmark}
 				onSizeChange={setBookmarkSize}
+				onShowAddButtonChange={setShowAddButton}
 				onChangeBackground={() => {
 					setIsManageModalOpen(false);
 					setIsBackgroundModalOpen(true);
